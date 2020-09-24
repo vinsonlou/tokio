@@ -69,7 +69,7 @@ cfg_io_driver! {
     /// [`clear_write_ready`]: method@Self::clear_write_ready
     /// [`poll_read_ready`]: method@Self::poll_read_ready
     /// [`poll_write_ready`]: method@Self::poll_write_ready
-    pub(crate) struct PollEvented<E> {
+    pub(crate) struct PollEvented<E: Source> {
         io: Option<E>,
         registration: Registration,
     }
@@ -77,10 +77,7 @@ cfg_io_driver! {
 
 // ===== impl PollEvented =====
 
-impl<'a, E: 'a> PollEvented<E>
-where
-    &'a E: Source,
-{
+impl<E: Source> PollEvented<E> {
     /// Creates a new `PollEvented` associated with the default reactor.
     ///
     /// # Panics
@@ -118,7 +115,7 @@ where
         interest: mio::Interest,
         handle: Handle,
     ) -> io::Result<Self> {
-        let registration = Registration::new_with_interest_and_handle(&mutio, interest, handle)?;
+        let registration = Registration::new_with_interest_and_handle(&mut io, interest, handle)?;
         Ok(Self {
             io: Some(io),
             registration,
@@ -155,7 +152,7 @@ where
     #[cfg(any(feature = "tcp", feature = "udp", feature = "uds"))]
     pub(crate) fn into_inner(mut self) -> io::Result<E> {
         let io = self.io.take().unwrap();
-        self.registration.deregister(&io)?;
+        self.registration.deregister(&mut io)?;
         Ok(io)
     }
 
@@ -223,10 +220,7 @@ where
 }
 
 cfg_io_readiness! {
-    impl<'a, E: 'a> PollEvented<E>
-    where
-        &'a E: Source,
-    {
+    impl<E: Source> PollEvented<E> {
         pub(crate) async fn readiness(&self, interest: mio::Interest) -> io::Result<ReadyEvent> {
             self.registration.readiness(interest).await
         }
@@ -251,10 +245,7 @@ cfg_io_readiness! {
 
 // ===== Read / Write impls =====
 
-impl<'a, E: 'a> AsyncRead for PollEvented<E>
-where
-    &'a E: Source + Read + Unpin,
-{
+impl<E: Source + Read + Unpin> AsyncRead for PollEvented<E> {
     fn poll_read(
         mut self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -279,10 +270,7 @@ where
     }
 }
 
-impl<'a, E: 'a> AsyncWrite for PollEvented<E>
-where
-    &'a E: Source + Write + Unpin,
-{
+impl<E: Source + Write + Unpin> AsyncWrite for PollEvented<E> {
     fn poll_write(
         mut self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -336,14 +324,11 @@ fn is_wouldblock<T>(r: &io::Result<T>) -> bool {
 //     }
 // }
 // 
-// impl<'a, E: 'a> Drop for PollEvented<'a, E>
-// where
-//     &'a E: Source,
-// {
-//     fn drop(&mut self) {
-//         if let Some(io) = self.io.take() {
-//             // Ignore errors
-//             let _ = self.registration.deregister(&io);
-//         }
-//     }
-// }
+impl<E: Source> Drop for PollEvented<E> {
+    fn drop(&mut self) {
+        if let Some(io) = self.io.take() {
+            // Ignore errors
+            let _ = self.registration.deregister(&mut io);
+        }
+    }
+}
