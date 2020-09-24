@@ -50,7 +50,7 @@ full = [
 blocking = ["rt-core"]
 dns = ["rt-core"]
 fs = ["rt-core", "io-util"]
-io-driver = ["mio", "lazy_static"] # internal only
+io-driver = ["mio/os-poll", "lazy_static"] # internal only
 io-readiness = [] # internal only
 io-util = ["memchr"]
 # stdin, stdout, stderr
@@ -76,17 +76,16 @@ signal = [
   "io-driver",
   "lazy_static",
   "libc",
-  "mio-uds",
   "signal-hook-registry",
   "winapi/consoleapi",
 ]
 stream = ["futures-core"]
 sync = ["fnv"]
 test-util = []
-tcp = ["io-driver", "iovec"]
+tcp = ["io-driver", "iovec", "mio/tcp"]
 time = ["slab"]
-udp = ["io-driver", "io-readiness"]
-uds = ["io-driver", "io-readiness", "mio-uds", "libc"]
+udp = ["io-driver", "io-readiness", "mio/udp"]
+uds = ["io-driver", "io-readiness", "libc", "mio/uds"]
 
 [dependencies]
 tokio-macros = { version = "0.3.0", path = "../tokio-macros", optional = true }
@@ -99,7 +98,7 @@ fnv = { version = "1.0.6", optional = true }
 futures-core = { version = "0.3.0", optional = true }
 lazy_static = { version = "1.0.2", optional = true }
 memchr = { version = "2.2", optional = true }
-mio = { version = "0.6.20", optional = true }
+mio = { version = "0.7.0", optional = true }
 iovec = { version = "0.1.4", optional = true }
 num_cpus = { version = "1.8.0", optional = true }
 parking_lot = { version = "0.11.0", optional = true } # Not in full
@@ -107,7 +106,6 @@ slab = { version = "0.4.1", optional = true } # Backs `DelayQueue`
 tracing = { version = "0.1.16", default-features = false, features = ["std"], optional = true } # Not in full
 
 [target.'cfg(unix)'.dependencies]
-mio-uds = { version = "0.6.5", optional = true }
 libc = { version = "0.2.42", optional = true }
 signal-hook-registry = { version = "1.1.1", optional = true }
 
