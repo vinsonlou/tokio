@@ -111,7 +111,7 @@ impl<E: Source> PollEvented<E> {
     }
 
     pub(crate) fn new_with_interest_and_handle(
-        io: E,
+        mut io: E,
         interest: mio::Interest,
         handle: Handle,
     ) -> io::Result<Self> {
@@ -151,7 +151,7 @@ impl<E: Source> PollEvented<E> {
     /// associated with a single reactor instance for their lifetime.
     #[cfg(any(feature = "tcp", feature = "udp", feature = "uds"))]
     pub(crate) fn into_inner(mut self) -> io::Result<E> {
-        let io = self.io.take().unwrap();
+        let mut io = self.io.take().unwrap();
         self.registration.deregister(&mut io)?;
         Ok(io)
     }
@@ -326,7 +326,7 @@ fn is_wouldblock<T>(r: &io::Result<T>) -> bool {
 // 
 impl<E: Source> Drop for PollEvented<E> {
     fn drop(&mut self) {
-        if let Some(io) = self.io.take() {
+        if let Some(mut io) = self.io.take() {
             // Ignore errors
             let _ = self.registration.deregister(&mut io);
         }
