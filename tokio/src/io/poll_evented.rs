@@ -317,13 +317,12 @@ fn is_wouldblock<T>(r: &io::Result<T>) -> bool {
     }
 }
 
-// impl<E: Sourfmt::Debug> fmt::Debug for PollEvented<E>
-// {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//         f.debug_struct("PollEvented").field("io", &self.io).finish()
-//     }
-// }
-// 
+impl<E: Source + fmt::Debug> fmt::Debug for PollEvented<E> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PollEvented").field("io", &self.io).finish()
+    }
+}
+
 impl<E: Source> Drop for PollEvented<E> {
     fn drop(&mut self) {
         if let Some(mut io) = self.io.take() {

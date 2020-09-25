@@ -162,9 +162,7 @@ impl ScheduledIo {
             let mut new = f(current_readiness);
 
             let packed = match tick {
-                Tick::Set(t) => {
-                    TICK.pack(t as usize, new.as_usize())
-                }
+                Tick::Set(t) => TICK.pack(t as usize, new.as_usize()),
                 Tick::Clear(t) => {
                     if TICK.unpack(current) as u8 != t {
                         // Trying to clear readiness with an old event!
@@ -208,10 +206,7 @@ impl ScheduledIo {
         #[cfg(any(feature = "udp", feature = "uds"))]
         {
             // check list of waiters
-            for waiter in waiters
-                .list
-                .drain_filter(|w| ready.satisfies(w.interest))
-            {
+            for waiter in waiters.list.drain_filter(|w| ready.satisfies(w.interest)) {
                 let waiter = unsafe { &mut *waiter.as_ptr() };
                 if let Some(waker) = waiter.waker.take() {
                     waiter.is_ready = true;

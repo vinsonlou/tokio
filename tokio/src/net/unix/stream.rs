@@ -1,9 +1,9 @@
 use crate::future::poll_fn;
 use crate::io::{AsyncRead, AsyncWrite, PollEvented, ReadBuf};
-use crate::net::unix::SocketAddr;
 use crate::net::unix::split::{split, ReadHalf, WriteHalf};
 use crate::net::unix::split_owned::{split_owned, OwnedReadHalf, OwnedWriteHalf};
 use crate::net::unix::ucred::{self, UCred};
+use crate::net::unix::SocketAddr;
 
 use std::convert::TryFrom;
 use std::fmt;

@@ -58,7 +58,9 @@ net = ["dns", "tcp", "udp", "uds"]
 process = [
   "lazy_static",
   "libc",
-  "mio",
+  "mio/os-poll",
+  "mio/os-util",
+  "mio/uds",
   "mio-named-pipes",
   "signal-hook-registry",
   "winapi/threadpoollegacyapiset",
@@ -73,7 +75,8 @@ rt-threaded = [
 signal = [
   "lazy_static",
   "libc",
-  "mio",
+  "mio/os-poll",
+  "mio/uds",
   "signal-hook-registry",
   "winapi/consoleapi",
 ]

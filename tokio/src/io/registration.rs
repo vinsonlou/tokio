@@ -67,8 +67,7 @@ impl Registration {
         io: &mut impl Source,
         interest: mio::Interest,
         handle: Handle,
-    ) -> io::Result<Registration>
-    {
+    ) -> io::Result<Registration> {
         let shared = if let Some(inner) = handle.inner() {
             inner.add_source(io, interest)?
         } else {

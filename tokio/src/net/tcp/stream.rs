@@ -531,6 +531,18 @@ impl TcpStream {
     }
 }
 
+impl TryFrom<std::net::TcpStream> for TcpStream {
+    type Error = io::Error;
+
+    /// Consumes stream, returning the tokio I/O object.
+    ///
+    /// This is equivalent to
+    /// [`TcpStream::from_std(stream)`](TcpStream::from_std).
+    fn try_from(stream: std::net::TcpStream) -> Result<Self, Self::Error> {
+        Self::from_std(stream)
+    }
+}
+
 // ===== impl Read / Write =====
 
 impl AsyncRead for TcpStream {

@@ -169,9 +169,7 @@ impl Driver {
             None => return,
         };
 
-        let res = io.set_readiness(Some(token.0), Tick::Set(self.tick), |curr| {
-            curr | ready
-        });
+        let res = io.set_readiness(Some(token.0), Tick::Set(self.tick), |curr| curr | ready);
 
         if res.is_err() {
             // token no longer valid!
