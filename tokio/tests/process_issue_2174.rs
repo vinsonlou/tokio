@@ -31,7 +31,11 @@ async fn issue_2174() {
     let handle = tokio::spawn(async move {
         let data = [0u8; 8192];
         loop {
-            input.write_all(&data).await.unwrap();
+            let res = input.write_all(&data).await;
+
+            if res.is_err() {
+                break;
+            }
         }
     });
 

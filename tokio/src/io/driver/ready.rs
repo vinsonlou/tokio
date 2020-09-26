@@ -1,3 +1,4 @@
+use std::fmt;
 use std::ops;
 
 const READABLE: usize = 0b0_01;
@@ -13,7 +14,7 @@ const WRITE_CLOSED: usize = 0b0_1000;
 /// This struct only represents portable event kinds. Portable events are
 /// events that can be raised on any platform while guaranteeing no false
 /// positives.
-#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
 pub(crate) struct Ready(usize);
 
 impl Ready {
@@ -43,6 +44,11 @@ impl Ready {
         }
 
         if event.is_writable() {
+            ready |= Ready::WRITABLE;
+        }
+
+        if event.is_error() && ready.is_empty() {
+            // TODO: This should be fixed in mio
             ready |= Ready::WRITABLE;
         }
 
@@ -171,5 +177,16 @@ impl<T: Into<Ready>> ops::Sub<T> for Ready {
     #[inline]
     fn sub(self, other: T) -> Ready {
         Ready(self.0 & !other.into().0)
+    }
+}
+
+impl fmt::Debug for Ready {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt.debug_struct("Ready")
+            .field("is_readable", &self.is_readable())
+            .field("is_writable", &self.is_writable())
+            .field("is_read_closed", &self.is_read_closed())
+            .field("is_write_closed", &self.is_write_closed())
+            .finish()
     }
 }

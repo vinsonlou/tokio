@@ -150,7 +150,7 @@ impl Driver {
             let token = event.token();
 
             if token == TOKEN_WAKEUP {
-                self.inner.waker.wake()?;
+                // self.inner.waker.wake()?;
             } else {
                 self.dispatch(token, Ready::from_mio(event));
             }
