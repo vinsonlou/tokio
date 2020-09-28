@@ -47,17 +47,17 @@ impl Ready {
             ready |= Ready::WRITABLE;
         }
 
-        if event.is_error() && ready.is_empty() {
-            // TODO: This should be fixed in mio
-            ready |= Ready::WRITABLE;
-        }
-
         if event.is_read_closed() {
             ready |= Ready::READ_CLOSED;
         }
 
         if event.is_write_closed() {
             ready |= Ready::WRITE_CLOSED;
+        }
+
+        if event.is_error() && ready.is_empty() {
+            // TODO: This should be fixed in mio
+            ready |= Ready::WRITABLE;
         }
 
         ready
