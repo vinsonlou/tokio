@@ -149,9 +149,7 @@ impl Driver {
         for event in events.iter() {
             let token = event.token();
 
-            if token == TOKEN_WAKEUP {
-                // self.inner.waker.wake()?;
-            } else {
+            if token != TOKEN_WAKEUP {
                 self.dispatch(token, Ready::from_mio(event));
             }
         }

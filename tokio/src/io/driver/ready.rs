@@ -55,11 +55,6 @@ impl Ready {
             ready |= Ready::WRITE_CLOSED;
         }
 
-        if event.is_error() && ready.is_empty() {
-            // TODO: This should be fixed in mio
-            ready |= Ready::WRITABLE;
-        }
-
         ready
     }
 
