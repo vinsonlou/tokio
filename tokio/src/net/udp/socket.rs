@@ -324,6 +324,18 @@ impl UdpSocket {
     }
 }
 
+impl TryFrom<std::net::UdpSocket> for UdpSocket {
+    type Error = io::Error;
+
+    /// Consumes stream, returning the tokio I/O object.
+    ///
+    /// This is equivalent to
+    /// [`UdpSocket::from_std(stream)`](UdpSocket::from_std).
+    fn try_from(stream: std::net::UdpSocket) -> Result<Self, Self::Error> {
+        Self::from_std(stream)
+    }
+}
+
 impl fmt::Debug for UdpSocket {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.io.get_ref().fmt(f)

@@ -159,7 +159,7 @@ impl ScheduledIo {
             // Mask out the tick/generation bits so that the modifying
             // function doesn't see them.
             let current_readiness = Ready::from_usize(current);
-            let mut new = f(current_readiness);
+            let new = f(current_readiness);
 
             let packed = match tick {
                 Tick::Set(t) => TICK.pack(t as usize, new.as_usize()),

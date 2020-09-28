@@ -22,19 +22,19 @@ impl Ready {
     pub(crate) const EMPTY: Ready = Ready(0);
 
     /// Returns a `Ready` representing readable readiness.
-    pub const READABLE: Ready = Ready(READABLE);
+    pub(crate) const READABLE: Ready = Ready(READABLE);
 
     /// Returns a `Ready` representing writable readiness.
-    pub const WRITABLE: Ready = Ready(WRITABLE);
+    pub(crate) const WRITABLE: Ready = Ready(WRITABLE);
 
     /// Returns a `Ready` representing read closed readiness.
-    pub const READ_CLOSED: Ready = Ready(READ_CLOSED);
+    pub(crate) const READ_CLOSED: Ready = Ready(READ_CLOSED);
 
     /// Returns a `Ready` representing write closed readiness.
-    pub const WRITE_CLOSED: Ready = Ready(WRITE_CLOSED);
+    pub(crate) const WRITE_CLOSED: Ready = Ready(WRITE_CLOSED);
 
     /// Returns a `Ready` representing readiness for all operations.
-    pub const ALL: Ready = Ready(READABLE | WRITABLE | READ_CLOSED | WRITE_CLOSED);
+    pub(crate) const ALL: Ready = Ready(READABLE | WRITABLE | READ_CLOSED | WRITE_CLOSED);
 
     pub(crate) fn from_mio(event: &mio::event::Event) -> Ready {
         let mut ready = Ready::EMPTY;
@@ -75,27 +75,27 @@ impl Ready {
     }
 
     /// Returns true if `Ready` is the empty set
-    pub fn is_empty(self) -> bool {
+    pub(crate) fn is_empty(self) -> bool {
         self == Ready::EMPTY
     }
 
     /// Returns true if the value includes readable readiness
-    pub fn is_readable(self) -> bool {
+    pub(crate) fn is_readable(self) -> bool {
         self.contains(Ready::READABLE)
     }
 
     /// Returns true if the value includes writable readiness
-    pub fn is_writable(self) -> bool {
+    pub(crate) fn is_writable(self) -> bool {
         self.contains(Ready::WRITABLE)
     }
 
     /// Returns true if the value includes read closed readiness
-    pub fn is_read_closed(self) -> bool {
+    pub(crate) fn is_read_closed(self) -> bool {
         self.contains(Ready::READ_CLOSED)
     }
 
     /// Returns true if the value includes write closed readiness
-    pub fn is_write_closed(self) -> bool {
+    pub(crate) fn is_write_closed(self) -> bool {
         self.contains(Ready::WRITE_CLOSED)
     }
 
@@ -104,7 +104,7 @@ impl Ready {
     /// `other` may represent more than one readiness operations, in which case
     /// the function only returns true if `self` contains all readiness
     /// specified in `other`.
-    pub fn contains<T: Into<Self>>(self, other: T) -> bool {
+    pub(crate) fn contains<T: Into<Self>>(self, other: T) -> bool {
         let other = other.into();
         (self & other) == other
     }
@@ -128,7 +128,7 @@ impl Ready {
     ///
     /// This function is mainly provided to allow the caller to get a
     /// readiness value from an `AtomicUsize`.
-    pub fn from_usize(val: usize) -> Ready {
+    pub(crate) fn from_usize(val: usize) -> Ready {
         Ready(val & Ready::ALL.as_usize())
     }
 
@@ -136,7 +136,7 @@ impl Ready {
     ///
     /// This function is mainly provided to allow the caller to store a
     /// readiness value in an `AtomicUsize`.
-    pub fn as_usize(self) -> usize {
+    pub(crate) fn as_usize(self) -> usize {
         self.0
     }
 }

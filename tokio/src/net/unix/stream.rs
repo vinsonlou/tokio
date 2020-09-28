@@ -140,15 +140,6 @@ impl UnixStream {
     }
 }
 
-impl TryFrom<UnixStream> for mio::net::UnixStream {
-    type Error = io::Error;
-
-    /// Consumes value, returning the mio I/O object.
-    fn try_from(value: UnixStream) -> Result<Self, Self::Error> {
-        value.io.into_inner()
-    }
-}
-
 impl TryFrom<net::UnixStream> for UnixStream {
     type Error = io::Error;
 

@@ -183,6 +183,18 @@ impl crate::stream::Stream for UnixListener {
     }
 }
 
+impl TryFrom<std::os::unix::net::UnixListener> for UnixListener {
+    type Error = io::Error;
+
+    /// Consumes stream, returning the tokio I/O object.
+    ///
+    /// This is equivalent to
+    /// [`UnixListener::from_std(stream)`](UnixListener::from_std).
+    fn try_from(stream: std::os::unix::net::UnixListener) -> io::Result<Self> {
+        Self::from_std(stream)
+    }
+}
+
 impl fmt::Debug for UnixListener {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.io.get_ref().fmt(f)

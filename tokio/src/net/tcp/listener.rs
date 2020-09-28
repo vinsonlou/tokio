@@ -399,15 +399,6 @@ impl crate::stream::Stream for TcpListener {
     }
 }
 
-impl TryFrom<TcpListener> for mio::net::TcpListener {
-    type Error = io::Error;
-
-    /// Consumes value, returning the mio I/O object.
-    fn try_from(value: TcpListener) -> Result<Self, Self::Error> {
-        value.io.into_inner()
-    }
-}
-
 impl TryFrom<net::TcpListener> for TcpListener {
     type Error = io::Error;
 

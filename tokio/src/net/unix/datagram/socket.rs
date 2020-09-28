@@ -706,6 +706,18 @@ impl UnixDatagram {
     }
 }
 
+impl TryFrom<std::os::unix::net::UnixDatagram> for UnixDatagram {
+    type Error = io::Error;
+
+    /// Consumes stream, returning the Tokio I/O object.
+    ///
+    /// This is equivalent to
+    /// [`UnixDatagram::from_std(stream)`](UnixDatagram::from_std).
+    fn try_from(stream: std::os::unix::net::UnixDatagram) -> Result<Self, Self::Error> {
+        Self::from_std(stream)
+    }
+}
+
 impl fmt::Debug for UnixDatagram {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.io.get_ref().fmt(f)
