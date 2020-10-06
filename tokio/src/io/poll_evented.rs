@@ -128,7 +128,7 @@ impl<E: Source> PollEvented<E> {
         feature = "process",
         feature = "tcp",
         feature = "udp",
-        feature = "uds",
+        all(unix, feature = "uds"),
         feature = "signal"
     ))]
     pub(crate) fn get_ref(&self) -> &E {

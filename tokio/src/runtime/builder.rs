@@ -143,7 +143,7 @@ impl Builder {
             all(unix, feature = "signal"),
             feature = "tcp",
             feature = "udp",
-            feature = "uds",
+            all(unix, feature = "uds"),
         ))]
         self.enable_io();
         #[cfg(feature = "time")]

@@ -8,7 +8,7 @@ macro_rules! cfg_resource_drivers {
                 all(unix, feature = "signal"),
                 all(not(loom), feature = "tcp"),
                 all(not(loom), feature = "udp"),
-                all(not(loom), feature = "uds"),
+                all(not(loom), unix, feature = "uds"),
             ))]
             $item
         )*
@@ -23,7 +23,7 @@ macro_rules! cfg_not_resource_drivers {
                 all(unix, feature = "signal"),
                 all(not(loom), feature = "tcp"),
                 all(not(loom), feature = "udp"),
-                all(not(loom), feature = "uds"),
+                all(not(loom), unix, feature = "uds"),
             )))]
             $item
         )*
@@ -39,7 +39,7 @@ macro_rules! cfg_either {
                 feature = "time",
                 all(not(loom), feature = "tcp"),
                 all(not(loom), feature = "udp"),
-                all(not(loom), feature = "uds"),
+                all(not(loom), unix, feature = "uds"),
             ))]
             $item
         )*
@@ -132,7 +132,7 @@ macro_rules! cfg_atomic_waker_impl {
                 feature = "tcp",
                 feature = "time",
                 feature = "udp",
-                feature = "uds",
+                all(unix, feature = "uds"),
             ))]
             #[cfg(not(loom))]
             $item
@@ -174,14 +174,14 @@ macro_rules! cfg_io_driver {
                 all(unix, feature = "signal"),
                 feature = "tcp",
                 feature = "udp",
-                feature = "uds",
+                all(unix, feature = "uds"),
             ))]
             #[cfg_attr(docsrs, doc(cfg(any(
                 feature = "process",
                 all(unix, feature = "signal"),
                 feature = "tcp",
                 feature = "udp",
-                feature = "uds",
+                all(unix, feature = "uds"),
             ))))]
             $item
         )*
@@ -196,7 +196,7 @@ macro_rules! cfg_not_io_driver {
                 all(unix, feature = "signal"),
                 feature = "tcp",
                 feature = "udp",
-                feature = "uds",
+                all(unix, feature = "uds"),
             )))]
             $item
         )*
@@ -206,7 +206,7 @@ macro_rules! cfg_not_io_driver {
 macro_rules! cfg_io_readiness {
     ($($item:item)*) => {
         $(
-            #[cfg(any(feature = "udp", feature = "uds", feature = "tcp"))]
+            #[cfg(any(feature = "tcp", feature = "udp", all(unix, feature = "uds")))]
             $item
         )*
     }
@@ -452,7 +452,7 @@ macro_rules! cfg_uds {
     ($($item:item)*) => {
         $(
             #[cfg(all(unix, feature = "uds"))]
-            #[cfg_attr(docsrs, doc(cfg(feature = "uds")))]
+            #[cfg_attr(docsrs, doc(cfg(all(unix, feature = "uds"))))]
             $item
         )*
     }
@@ -493,8 +493,8 @@ macro_rules! cfg_coop {
                     feature = "tcp",
                     feature = "time",
                     feature = "udp",
-                    feature = "uds",
-                    ))]
+                    all(unix, feature = "uds"),
+            ))]
             $item
         )*
     }

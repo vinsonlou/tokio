@@ -21,7 +21,7 @@ pub(crate) mod cell {
     feature = "sync",
     feature = "tcp",
     feature = "udp",
-    feature = "uds",
+    all(unix, feature = "uds"),
 ))]
 pub(crate) mod future {
     pub(crate) use crate::sync::AtomicWaker;
