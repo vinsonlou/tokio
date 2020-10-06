@@ -34,7 +34,7 @@
 //! * `park_timeout` does the same as `park` but allows specifying a maximum
 //!   time to block the thread for.
 
-cfg_resource_drivers! {
+cfg_either! {
     mod either;
     pub(crate) use self::either::Either;
 }

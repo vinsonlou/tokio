@@ -7,7 +7,37 @@ macro_rules! cfg_resource_drivers {
                 feature = "process",
                 all(unix, feature = "signal"),
                 all(not(loom), feature = "tcp"),
+                all(not(loom), feature = "udp"),
+                all(not(loom), feature = "uds"),
+            ))]
+            $item
+        )*
+    }
+}
+
+macro_rules! cfg_not_resource_drivers {
+    ($($item:item)*) => {
+        $(
+            #[cfg(not(any(
+                feature = "process",
+                all(unix, feature = "signal"),
+                all(not(loom), feature = "tcp"),
+                all(not(loom), feature = "udp"),
+                all(not(loom), feature = "uds"),
+            )))]
+            $item
+        )*
+    }
+}
+
+macro_rules! cfg_either {
+    ($($item:item)*) => {
+        $(
+            #[cfg(any(
+                feature = "process",
+                all(unix, feature = "signal"),
                 feature = "time",
+                all(not(loom), feature = "tcp"),
                 all(not(loom), feature = "udp"),
                 all(not(loom), feature = "uds"),
             ))]
